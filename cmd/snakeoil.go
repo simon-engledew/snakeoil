@@ -24,6 +24,7 @@ var (
 	province           = kingpin.Flag("ST", "State, province or county").Strings()
 	locality           = kingpin.Flag("L", "City").Strings()
 	expiry             = kingpin.Flag("expires", "Expiry").Default("8760h").Duration()
+	addresses          = kingpin.Flag("address", "Address to add to the SAN").IPList()
 )
 
 func GetAddresses() []net.IP {
@@ -62,7 +63,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	addresses := GetAddresses()
+	if len(*addresses) == 0 {
+		addrs := GetAddresses()
+		addresses = &addrs
+	}
 
 	if *commonName == "" {
 		hostname, err := os.Hostname()
@@ -97,7 +101,7 @@ func main() {
 			Province:           *province,
 		},
 
-		IPAddresses: addresses,
+		IPAddresses: *addresses,
 
 		NotBefore: time.Now(),
 		NotAfter:  time.Now().Add(*expiry),
