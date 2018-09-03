@@ -24,6 +24,7 @@ var (
 	province           = kingpin.Flag("ST", "State, province or county").Strings()
 	locality           = kingpin.Flag("L", "City").Strings()
 	expiry             = kingpin.Flag("expires", "Expiry").Default("8760h").Duration()
+	dnsNames           = kingpin.Flag("dns", "DNS names").Strings()
 	addresses          = kingpin.Flag("address", "Address to add to the SAN").IPList()
 )
 
@@ -102,6 +103,7 @@ func main() {
 		},
 
 		IPAddresses: *addresses,
+		DNSNames:    *dnsNames,
 
 		NotBefore: time.Now(),
 		NotAfter:  time.Now().Add(*expiry),
